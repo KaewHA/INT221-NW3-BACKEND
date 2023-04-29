@@ -8,18 +8,22 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+
 @Getter@Setter
 public class announcementdetail {
+    private int id;
 
-    private int announcementID;
-    private  String announcementName;
-    private  String announcementDes;
-    private  String publishDate;
+    private  String announcementTitle;
+    private  String announcementDescription;
+    private  ZonedDateTime publishDate;
 
-    private  String closeDate;
+    private ZonedDateTime closeDate;
     @JsonIgnore
     private Category category;
 
-    public String getcategoryName() {return category.getCategoryName();}
-    private  String annonuncementDisplay;
+    public String getannouncementCategory() {return category.getCategoryName();}
+    private  String announcementDisplay;
 }
