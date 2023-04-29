@@ -30,9 +30,9 @@ public class announservice {
     }
 
     public void removeannocemment(int id) {
-        announcement announcement = repo.findById(id).orElseThrow(
+        repo.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!")
         );
-        repo.delete(announcement);
+        repo.deleteById(id);
     }
 }
