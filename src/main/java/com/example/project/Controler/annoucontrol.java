@@ -4,10 +4,7 @@ import com.example.project.Entity.announcement;
 import com.example.project.Service.announservice;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,5 +35,13 @@ public class annoucontrol {
     public void removeOffice(@PathVariable int id) {
         System.out.println(id);
         service.removeannocemment(id);
+    }
+    @PutMapping("/{id}")
+    public Optional<announcement> updateOffice(@RequestBody announcement anno, @PathVariable int id) {
+          return service.updateannouncement(id, anno);
+    }
+    @PostMapping("/add")
+    public Optional<announcement> updateOffice(@RequestBody announcement anno) {
+        return service.addannouncement(anno);
     }
 }

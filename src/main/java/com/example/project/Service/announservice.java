@@ -35,4 +35,21 @@ public class announservice {
         );
         repo.deleteById(id);
     }
+
+    public Optional<announcement> updateannouncement(int id, announcement announcement) {
+        repo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"));
+        announcement anno=repo.findById(id).get();
+        anno.setAnnouncementTitle(announcement.getAnnouncementTitle());
+        anno.setAnnouncementDescription(announcement.getAnnouncementDescription());
+        anno.setPublishDate(announcement.getPublishDate());
+        anno.setCloseDate(announcement.getCloseDate());
+        anno.setAnnouncementDisplay(announcement.getAnnouncementDisplay());
+        anno.setCategory(announcement.getCategory());
+        return Optional.of(repo.saveAndFlush(anno));
+    }
+
+    public Optional<announcement> addannouncement(announcement news) {
+        return Optional.of(repo.saveAndFlush(news));
+    }
 }

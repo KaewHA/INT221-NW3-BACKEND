@@ -26,12 +26,12 @@ public class  announcement  {
     @Column(name = "announcementDescription" ,nullable = false)
     private  String announcementDescription;
 
-    @Column(name = "publishDate" ,nullable = false)
+    @Column(name = "publishDate" ,nullable = true)
     private  ZonedDateTime publishDate;
 
 
 
-    @Column(name = "closeDate" ,nullable = false)
+    @Column(name = "closeDate" ,nullable = true)
     private ZonedDateTime closeDate;
    // @JsonIgnore
     @ManyToOne
