@@ -7,8 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
-
-
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -28,17 +26,12 @@ public class  announcement  {
 
     @Column(name = "publishDate" ,nullable = true)
     private  ZonedDateTime publishDate;
-
-
-
     @Column(name = "closeDate" ,nullable = true)
     private ZonedDateTime closeDate;
    // @JsonIgnore
     @ManyToOne
     @JoinColumn(name="CategoryID", nullable=false)
     private Category category;
-
-
     @Column(name = "announcementDisplay" ,nullable = false)
     private  String announcementDisplay;
 }

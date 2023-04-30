@@ -32,16 +32,16 @@ public class annoucontrol {
     }
 
     @DeleteMapping("/{id}")
-    public void removeOffice(@PathVariable int id) {
+    public void removeAnnouncement(@PathVariable int id) {
         System.out.println(id);
         service.removeannocemment(id);
     }
     @PutMapping("/{id}")
-    public Optional<announcement> updateOffice(@RequestBody announcement anno, @PathVariable int id) {
+    public Optional<announcement> updateAnnouncement(@RequestBody announcement anno, @PathVariable int id) {
           return service.updateannouncement(id, anno);
     }
     @PostMapping("/add")
-    public Optional<announcement> updateOffice(@RequestBody announcement anno) {
+    public Optional<announcement> createAnnouncement(@RequestBody announcement anno) {
         return service.addannouncement(anno);
     }
 }

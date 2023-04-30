@@ -12,7 +12,7 @@ public class cateservice {
     @Autowired
     private categoryrepo repo;
 
-    public List<Category> getOffices(){
+    public List<Category> getcategoriesall(){
         return repo.findAll();
     }
 }
