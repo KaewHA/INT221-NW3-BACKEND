@@ -16,7 +16,7 @@ import java.util.List;
 public class catecontroller {
     @Autowired
     private cateservice service;
-    @GetMapping("/")
+    @GetMapping("")
     public List<Category> getcategoriesall(){
         return service.getcategoriesall();
     }

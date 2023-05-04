@@ -20,7 +20,6 @@ public class announservice {
     private ModelMapper modelMapper;
 
     public List<announcement> getall(){
-
         return repo.findAll(Sort.by(Sort.Direction.DESC, "announcementID"));
     }
 

@@ -2,22 +2,18 @@ package com.example.project.DTO;
 
 import com.example.project.Entity.Category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 @Getter@Setter
-public class announcementdetail {
+public class annowithdetail {
     private int id;
 
     private  String announcementTitle;
-    private  ZonedDateTime publishDate;
+    private  String announcementDescription;
+    private ZonedDateTime publishDate;
 
     private ZonedDateTime closeDate;
     @JsonIgnore
