@@ -49,8 +49,11 @@ public class annoucontrol {
         service.removeannocemment(id);
     }
     @PutMapping("/{id}")
-    public Optional<announcement> updateAnnouncement(@RequestBody announcement anno, @PathVariable int id) {
-          return service.updateannouncement(id, anno);
+    public Optional<annowithdetail> updateAnnouncement(@RequestBody createanno anno, @PathVariable int id) {
+        Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
+        announcement myanno = modelMapper.map(anno,announcement.class);
+        myanno.setCategory(cate.get());
+          return service.updateannouncement(id,myanno).map(e -> modelMapper.map( e, annowithdetail.class));
     }
     @PostMapping("/add")
     public Optional<createreturn> createAnnouncement(@RequestBody createanno anno) {

@@ -42,6 +42,16 @@ public class announservice {
     public Optional<announcement> updateannouncement(int id, announcement announcement) {
         repo.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"));
+        if(announcement.getAnnouncementTitle().length()>200){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "TITLE >200");
+        }else if(announcement.getAnnouncementDescription().length()>10000){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "DES >10000");
+        }else if(!announcement.getAnnouncementDisplay().equals("Y") && !announcement.getAnnouncementDisplay().equals("N") ){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "DISPLAY ");
+        }
         announcement anno=repo.findById(id).get();
         anno.setAnnouncementTitle(announcement.getAnnouncementTitle());
         anno.setAnnouncementDescription(announcement.getAnnouncementDescription());
@@ -53,7 +63,6 @@ public class announservice {
     }
 
     public Optional<announcement> addannouncement(announcement news) {
-        System.out.println(news.getAnnouncementDisplay());
       if(news.getAnnouncementTitle().length()>200){
           throw new ResponseStatusException(
                   HttpStatus.BAD_REQUEST, "TITLE >200");
