@@ -4,10 +4,10 @@ import com.example.project.Entity.Category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.ZonedDateTime;
 
+import java.time.ZonedDateTime;
 @Getter@Setter
-public class annowithdetail {
+public class createreturn {
     private int id;
 
     private  String announcementTitle;
@@ -19,5 +19,7 @@ public class annowithdetail {
     private Category category;
 
     public String getannouncementCategory() {return category.getCategoryName();}
+
+    public int getcategoryId() {return category.getCategoryID();}
     private  String announcementDisplay;
 }

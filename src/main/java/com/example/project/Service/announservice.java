@@ -6,7 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,8 @@ public class announservice {
 
     @Autowired
     private ModelMapper modelMapper;
+
+
 
     public List<announcement> getall(){
         return repo.findAll(Sort.by(Sort.Direction.DESC, "announcementID"));
@@ -49,6 +53,17 @@ public class announservice {
     }
 
     public Optional<announcement> addannouncement(announcement news) {
-        return Optional.of(repo.saveAndFlush(news));
+        System.out.println(news.getAnnouncementDisplay());
+      if(news.getAnnouncementTitle().length()>200){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, "TITLE >200");
+      }else if(news.getAnnouncementDescription().length()>10000){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, "DES >10000");
+      }else if(!news.getAnnouncementDisplay().equals("Y") && !news.getAnnouncementDisplay().equals("N") ){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, "DISPLAY ");
+      }
+       return Optional.of(repo.saveAndFlush(news));
     }
 }
