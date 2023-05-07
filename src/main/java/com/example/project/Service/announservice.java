@@ -73,6 +73,6 @@ public class announservice {
           throw new ResponseStatusException(
                   HttpStatus.BAD_REQUEST, "DISPLAY ");
       }
-       return Optional.of(repo.saveAndFlush(news));
+      return  Optional.of(repo.saveAndFlush(news));
     }
 }

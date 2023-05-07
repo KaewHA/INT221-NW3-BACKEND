@@ -17,6 +17,7 @@ import java.time.ZonedDateTime;
 @Table(name = "Announcemment")
 public class  announcement  {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "announcementID" ,nullable = false)
     private int announcementID;
     @Column(name = "announcementTitle" ,nullable = false)
