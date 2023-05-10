@@ -4,6 +4,7 @@ import com.example.project.Entity.Category;
 import com.example.project.Entity.announcement;
 import com.example.project.repo.categoryrepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,7 @@ public class cateservice {
         return repo.findAll();
     }
     public Optional<Category> getcategoryByid(int id){
-        return repo.findById(id);
+        return Optional.ofNullable(repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category id :" + id + " does not exist !!!")));
     }
 
     public Optional<Category> addcategory(Category category) {

@@ -1,6 +1,8 @@
 package com.example.project.Controler;
 
+import com.example.project.DTO.annowithdetail;
 import com.example.project.Entity.Category;
+import com.example.project.Entity.announcement;
 import com.example.project.Service.cateservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +24,12 @@ public class catecontroller {
     @PostMapping("")
     public Optional<Category> addcategory(@RequestBody Category category){
         return service.addcategory(category);
+    }
+
+
+    @GetMapping("/{id}")
+    public Optional<Category> getID(@PathVariable int id){
+
+        return  service.getcategoryByid(id);
     }
 }
