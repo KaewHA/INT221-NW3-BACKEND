@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,12 @@ public class announservice {
         }else if(!announcement.getAnnouncementDisplay().equals("Y") && !announcement.getAnnouncementDisplay().equals("N") ){
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "DISPLAY ");
+        }else if(announcement.getAnnouncementDescription().trim().length()==0){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "DES is null");
+        }else if(announcement.getAnnouncementTitle().trim().length()==0){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "TITLE is null");
         }
         announcement anno=repo.findById(id).get();
         anno.setAnnouncementTitle(announcement.getAnnouncementTitle());
@@ -72,6 +79,40 @@ public class announservice {
       }else if(!news.getAnnouncementDisplay().equals("Y") && !news.getAnnouncementDisplay().equals("N") ){
           throw new ResponseStatusException(
                   HttpStatus.BAD_REQUEST, "DISPLAY ");
+      }else if(news.getAnnouncementDescription().trim().length()==0){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, "DES is null");
+      }else if(news.getAnnouncementTitle().trim().length()==0){
+          throw new ResponseStatusException(
+                  HttpStatus.BAD_REQUEST, "TITLE is null");
+      }
+      if(news.getPublishDate()==null){
+          if(news.getCloseDate()!=null){
+              ZonedDateTime x=news.getCloseDate();
+              long cl=x.toEpochSecond();
+              long now=ZonedDateTime.now().toEpochSecond();
+              if(now>cl){
+                  throw new ResponseStatusException(
+                          HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART");
+              }
+          }
+
+      }else {
+          if(news.getPublishDate().toEpochSecond() < ZonedDateTime.now().toEpochSecond()){
+              throw new ResponseStatusException(
+                      HttpStatus.BAD_REQUEST, "PL IS PART");
+          }
+          if(news.getCloseDate()!=null){
+              ZonedDateTime x=news.getCloseDate();
+              ZonedDateTime y=news.getPublishDate();
+              long cl=x.toEpochSecond();
+              long now=ZonedDateTime.now().toEpochSecond();
+              long pb=y.toEpochSecond();
+              if(now>cl || cl<pb){
+                  throw new ResponseStatusException(
+                          HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART AND PAST FROM PB");
+              }
+          }
       }
       return  Optional.of(repo.saveAndFlush(news));
     }

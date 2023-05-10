@@ -3,15 +3,13 @@ package com.example.project.Controler;
 import com.example.project.Entity.Category;
 import com.example.project.Service.cateservice;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 @CrossOrigin
 public class catecontroller {
     @Autowired
@@ -19,5 +17,10 @@ public class catecontroller {
     @GetMapping("")
     public List<Category> getcategoriesall(){
         return service.getcategoriesall();
+    }
+
+    @PostMapping("")
+    public Optional<Category> addcategory(@RequestBody Category category){
+        return service.addcategory(category);
     }
 }

@@ -1,9 +1,6 @@
 package com.example.project.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +12,7 @@ import java.util.Set;
 public class Category {
 @Id
 @Column(name = "categoryID" ,nullable = false)
+@GeneratedValue(strategy=GenerationType.IDENTITY)
     private int categoryID;
 @Column(name = "categoryName" ,nullable = false)
    private  String categoryName;
