@@ -59,6 +59,34 @@ public class announservice {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "TITLE is null");
         }
+        if(announcement.getPublishDate()==null){
+            if(announcement.getCloseDate()!=null){
+                ZonedDateTime x=announcement.getCloseDate();
+                long cl=x.toEpochSecond();
+                long now=ZonedDateTime.now().toEpochSecond();
+                if(now>cl){
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART");
+                }
+            }
+
+        }else {
+            if(announcement.getPublishDate().toEpochSecond() < ZonedDateTime.now().toEpochSecond()){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART");
+            }
+            if(announcement.getCloseDate()!=null){
+                ZonedDateTime x=announcement.getCloseDate();
+                ZonedDateTime y=announcement.getPublishDate();
+                long cl=x.toEpochSecond();
+                long now=ZonedDateTime.now().toEpochSecond();
+                long pb=y.toEpochSecond();
+                if(now>cl || cl<pb){
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART AND PAST FROM PB");
+                }
+            }
+        }
         announcement anno=repo.findById(id).get();
         anno.setAnnouncementTitle(announcement.getAnnouncementTitle());
         anno.setAnnouncementDescription(announcement.getAnnouncementDescription());
@@ -100,7 +128,7 @@ public class announservice {
       }else {
           if(news.getPublishDate().toEpochSecond() < ZonedDateTime.now().toEpochSecond()){
               throw new ResponseStatusException(
-                      HttpStatus.BAD_REQUEST, "PL IS PART");
+                      HttpStatus.BAD_REQUEST, "CLOSE DATE IS PART");
           }
           if(news.getCloseDate()!=null){
               ZonedDateTime x=news.getCloseDate();
