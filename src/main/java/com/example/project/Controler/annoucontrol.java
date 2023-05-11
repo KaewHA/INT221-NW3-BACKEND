@@ -94,7 +94,7 @@ public class annoucontrol {
             return filteractive(myanno).stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
         }
         throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "BAD REQUEST CHECK MODE OR CATEGORY ");
+                HttpStatus.BAD_REQUEST, "CATEGORT CODE OR MODE IS NOT FOUND ");
     }
     @GetMapping("/{id}")
     public Optional<annowithdetail> getID(@PathVariable int id){

@@ -178,7 +178,7 @@ public class announservice {
             return  convertArrayListToPage((ArrayList<announcement>) filteractives,page,pagesize);
         }
         throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "NOCATEGORY");
+                HttpStatus.BAD_REQUEST, "CATEGORY CODE OR MODE IS NOT FOUND");
     }
 
 //        public static <T> Page<T> createPage(List<T> content, Pageable pageable, long totalElements) {
