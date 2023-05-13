@@ -7,19 +7,28 @@ import com.example.project.Entity.Category;
 import com.example.project.Entity.announcement;
 import com.example.project.Service.announservice;
 import com.example.project.Service.cateservice;
+import com.example.project.advice.ErrorResponse;
 import com.example.project.pagedto.PageDTO;
 import com.example.project.utils.ListMapper;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -111,28 +120,57 @@ public class annoucontrol {
         service.removeannocemment(id);
     }
     @PutMapping("/{id}")
-    public Optional<annowithdetail> updateAnnouncement(@RequestBody createanno anno, @PathVariable int id) {
+    public Optional<annowithdetail> updateAnnouncement(@RequestBody @Valid createanno anno, @PathVariable int id) {
         Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
         announcement myanno = modelMapper.map(anno,announcement.class);
         myanno.setCategory(cate.get());
           return service.updateannouncement(id,myanno).map(e -> modelMapper.map( e, annowithdetail.class));
     }
-    @PostMapping("")
-    public Optional<createreturn> createAnnouncement(@RequestBody createanno anno) {
-        System.out.println(anno.getAnnouncementDescription().length());
+
+@PostMapping("")
+public Optional<createreturn> createAnnouncement(@RequestBody @Valid createanno anno) {
         Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
-        announcement myanno = modelMapper.map(anno,announcement.class);
+        announcement myanno = modelMapper.map(anno, announcement.class);
         myanno.setCategory(cate.get());
-        return service.addannouncement(myanno).map(e -> modelMapper.map( e, createreturn.class));
-    }
+        return service.addannouncement(myanno).map(e -> modelMapper.map(e, createreturn.class));
+}
     @GetMapping("/pages")
-    public PageDTO<announcementdetail> getAnnouncesPage(
+    public PageDTO<announcementdetail> getAnnouncesPage (
             @RequestParam(defaultValue = "active") String mode,
             @RequestParam(defaultValue = "0") Integer category,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "5") Integer size) {
-        Page<announcement> mypage=service.getpagenodetail(page, size, category, mode);
-    return  listMapper.toPageDTO(mypage,announcementdetail.class,modelMapper);
+            @RequestParam(defaultValue = "5") Integer size){
+        Page<announcement> mypage = service.getpagenodetail(page, size, category, mode);
+        return listMapper.toPageDTO(mypage, announcementdetail.class, modelMapper);
 
     }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Announcement attributes validation failed!", request.getDescription(false));
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            errorResponse.addValidationError(fieldError.getField(),
+                    fieldError.getDefaultMessage());
+        }
+        return ResponseEntity.unprocessableEntity().body(errorResponse);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            Exception exception, HttpStatus httpStatus, WebRequest request) {
+        return buildErrorResponse( exception, exception.getMessage(), httpStatus, request);
+    }
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            Exception exception, String message, HttpStatus httpStatus, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), exception.getMessage(),
+                request.getDescription(false)
+        );
+        return ResponseEntity.status(httpStatus).body(errorResponse);
+    }
+
+
 }

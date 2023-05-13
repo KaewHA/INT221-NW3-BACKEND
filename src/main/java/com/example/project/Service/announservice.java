@@ -103,7 +103,7 @@ public class announservice {
     }
 
     public Optional<announcement> addannouncement(announcement news) {
-        validate(news);
+//        validate(news);
       return  Optional.of(repo.saveAndFlush(news));
     }
     public List<announcement> filterclose (List<announcement> myanno){
