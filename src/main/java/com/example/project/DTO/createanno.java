@@ -2,10 +2,7 @@ package com.example.project.DTO;
 
 import com.example.project.validation.ValidDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -15,48 +12,31 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.ZonedDateTime;
 @Validated
 @Getter@Setter
+
 public class createanno {
-    @NotBlank(message = "title is null") @Size(min = 1,max = 200,message = "title  max 200")
+    @JsonIgnore
+    @ValidDate(value = "2" ,message = "publicdate or codedate is is part")
+    private  boolean getcloseDateError(){
+        if (this.closeDate == null || this.publishDate== null) {
+            return true;
+        }
+        return this.closeDate.isAfter(this.publishDate);
+    }
+    @NotNull(message = "must not be blank")@NotBlank(message = "must not be blank") @Size(min = 1,max = 200,message = "size must be between 1 and 200")
     private  String announcementTitle;
-    @NotBlank(message = "Description is null") @Size(min = 1,max = 10000,message = "description max 10000")
+    @NotNull(message = "must not be blank")@NotBlank(message = "must not be blank") @Size(min = 1,max = 10000,message = "size must be between 1 and 10000")
     private  String announcementDescription;
-    @Future(message = "publish date is part")
+    @Future(message = "must be a date in the present or in the future")
     private ZonedDateTime publishDate;
 
-    @Future(message = "closedate is part")
+    @Future(message = "must be a future date")
     private ZonedDateTime closeDate;
+
+    @Min(value = 1,message = "must not be null")@Max(value = 4 ,message = "does not exists")
     private  int categoryId;
 
-    @Pattern(regexp = "[YN]", message = "Invalid value. Only 'Y' or 'N' allowed.")
+    @Pattern(regexp = "[YN]", message = "must be either 'Y' or 'N'")
     private  String announcementDisplay;
 
-    @JsonIgnore
-    @ValidDate(message = "close date is part from public date!")
-    private  boolean getCloseDateispart(){
-        if(this.publishDate==null){
-            if(this.closeDate!=null){
-                ZonedDateTime x=this.closeDate;
-                long cl=x.toEpochSecond();
-                long now=ZonedDateTime.now().toEpochSecond();
-                if(now>cl){
-                    return  false;
-                }
-            }
-        }else {
-            if(this.publishDate.toEpochSecond() < ZonedDateTime.now().toEpochSecond()){
-                return  false;
-            }
-            if(this.closeDate!=null){
-                ZonedDateTime x=this.closeDate;
-                ZonedDateTime y=this.publishDate;
-                long cl=x.toEpochSecond();
-                long now=ZonedDateTime.now().toEpochSecond();
-                long pb=y.toEpochSecond();
-                if(now>cl || cl<pb){
-                    return  false;
-                }
-            }
-        }
-        return true;
-    }
+
 }

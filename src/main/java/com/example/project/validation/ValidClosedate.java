@@ -14,8 +14,7 @@ public class ValidClosedate implements ConstraintValidator<ValidDate, Boolean> {
     }
 
     @Override
-    public boolean isValid( Boolean result, ConstraintValidatorContext constraintValidatorContext) {
-        System.out.println(result);
+    public boolean isValid(Boolean result, ConstraintValidatorContext constraintValidatorContext) {
         return result;
     }
 }

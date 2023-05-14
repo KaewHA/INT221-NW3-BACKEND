@@ -128,7 +128,7 @@ public class annoucontrol {
     }
 
 @PostMapping("")
-public Optional<createreturn> createAnnouncement(@RequestBody @Valid createanno anno) {
+public Optional<createreturn> createAnnouncement(@RequestBody  @Valid  createanno anno) {
         Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
         announcement myanno = modelMapper.map(anno, announcement.class);
         myanno.setCategory(cate.get());
@@ -144,8 +144,25 @@ public Optional<createreturn> createAnnouncement(@RequestBody @Valid createanno 
         return listMapper.toPageDTO(mypage, announcementdetail.class, modelMapper);
 
     }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+//    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
+//            MethodArgumentNotValidException ex,
+//            WebRequest request
+//    ) {
+//        ErrorResponse errorResponse = new ErrorResponse(
+//                HttpStatus.BAD_REQUEST.value(),
+//                "Announcement attributes validation failed!", request.getDescription(false));
+//        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+//            errorResponse.addValidationError(fieldError.getField(),
+//                    fieldError.getDefaultMessage());
+//        }
+//        return ResponseEntity.unprocessableEntity().body(errorResponse);
+//    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             WebRequest request
@@ -154,12 +171,17 @@ public Optional<createreturn> createAnnouncement(@RequestBody @Valid createanno 
                 HttpStatus.BAD_REQUEST.value(),
                 "Announcement attributes validation failed!", request.getDescription(false));
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            errorResponse.addValidationError(fieldError.getField(),
-                    fieldError.getDefaultMessage());
+            System.out.println(fieldError.getField());
+            if(fieldError.getField().equals("closeDateError")){
+                errorResponse.addValidationError("closeDate",
+                        "must be later than publish date");
+            }else  {
+                errorResponse.addValidationError(fieldError.getField(),
+                        fieldError.getDefaultMessage());
+            }
         }
-        return ResponseEntity.unprocessableEntity().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
-
     private ResponseEntity<ErrorResponse> buildErrorResponse(
             Exception exception, HttpStatus httpStatus, WebRequest request) {
         return buildErrorResponse( exception, exception.getMessage(), httpStatus, request);
