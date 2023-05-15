@@ -124,6 +124,9 @@ public class annoucontrol {
         Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
         announcement myanno = modelMapper.map(anno,announcement.class);
         myanno.setCategory(cate.get());
+        if(myanno.getAnnouncementDisplay()==null){
+            myanno.setAnnouncementDisplay("N");
+        }
           return service.updateannouncement(id,myanno).map(e -> modelMapper.map( e, annowithdetail.class));
     }
 
@@ -132,6 +135,9 @@ public Optional<createreturn> createAnnouncement(@RequestBody  @Valid  createann
         Optional<Category> cate = cateservice.getcategoryByid(anno.getCategoryId());
         announcement myanno = modelMapper.map(anno, announcement.class);
         myanno.setCategory(cate.get());
+        if(myanno.getAnnouncementDisplay()==null){
+            myanno.setAnnouncementDisplay("N");
+        }
         return service.addannouncement(myanno).map(e -> modelMapper.map(e, createreturn.class));
 }
     @GetMapping("/pages")
@@ -171,7 +177,6 @@ public Optional<createreturn> createAnnouncement(@RequestBody  @Valid  createann
                 HttpStatus.BAD_REQUEST.value(),
                 "Announcement attributes validation failed!", request.getDescription(false));
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            System.out.println(fieldError.getField());
             if(fieldError.getField().equals("closeDateError")){
                 errorResponse.addValidationError("closeDate",
                         "must be later than publish date");
