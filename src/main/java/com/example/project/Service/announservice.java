@@ -1,8 +1,10 @@
 package com.example.project.Service;
 
 import com.example.project.Entity.announcement;
+import com.example.project.Entity.count;
 import com.example.project.pagedto.PageDTO;
 import com.example.project.repo.annorepo;
+import com.example.project.repo.countrepo;
 import com.example.project.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +23,31 @@ public class announservice {
     private annorepo repo;
 
     @Autowired
+    private countrepo countrepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private ListMapper listMapper;
+    @Autowired
+    private  countservice count;
 
     public List<announcement> getall(){
         return repo.findAll(Sort.by(Sort.Direction.DESC, "announcementID"));
     }
 
     public Optional<announcement> getbyid(int id){
-        return Optional.ofNullable(repo.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!")));
+        announcement addcount= Optional.ofNullable(repo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"))).get();
+        count.updateCount(id);
+        return Optional.of(addcount);
+    }
+
+    public Optional<announcement> getbyidadmin(int id){
+        announcement addcount= Optional.ofNullable(repo.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"))).get();
+        return Optional.of(addcount);
     }
 
     public void removeannocemment(int id) {
@@ -99,12 +114,14 @@ public class announservice {
         anno.setCloseDate(announcement.getCloseDate());
         anno.setAnnouncementDisplay(announcement.getAnnouncementDisplay());
         anno.setCategory(announcement.getCategory());
-        return Optional.of(repo.saveAndFlush(anno));
+        Optional<announcement> updateanno = Optional.of(repo.saveAndFlush(anno));
+        return  updateanno;
     }
 
     public Optional<announcement> addannouncement(announcement news) {
-//        validate(news);
-      return  Optional.of(repo.saveAndFlush(news));
+        Optional<announcement> newanno=Optional.of(repo.saveAndFlush(news));
+        count.initCount(newanno.get().getAnnouncementID());
+      return  newanno;
     }
     public List<announcement> filterclose (List<announcement> myanno){
         List<announcement> mylist= new ArrayList<>();

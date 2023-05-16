@@ -106,13 +106,20 @@ public class annoucontrol {
                 HttpStatus.BAD_REQUEST, "CATEGORT CODE OR MODE IS NOT FOUND ");
     }
     @GetMapping("/{id}")
-    public Optional<annowithdetail> getID(@PathVariable int id){
-        Optional<announcement> announcement= service.getbyid(id);
-       return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
+    public Optional<annowithdetail> getID(@PathVariable int id ,@RequestParam(defaultValue = "user") String mode ){
+        if(mode.equals("user")){
+            Optional<announcement> announcement= service.getbyid(id);
+            return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
+        }else {
+            Optional<announcement> announcement= service.getbyidadmin(id);
+            return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
+        }
+
     }
+    
     @GetMapping("/{id}/data")
     public Optional<announcement> getIDcate(@PathVariable int id){
-        return  service.getbyid(id);
+        return  service.getbyidadmin(id);
     }
 
     @DeleteMapping("/{id}")

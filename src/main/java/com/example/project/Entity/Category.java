@@ -9,6 +9,7 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@Table(name = "Category")
 public class Category {
 @Id
 @Column(name = "categoryID" ,nullable = false)
