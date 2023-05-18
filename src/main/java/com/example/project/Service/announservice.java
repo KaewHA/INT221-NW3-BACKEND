@@ -1,10 +1,7 @@
 package com.example.project.Service;
 
 import com.example.project.Entity.announcement;
-import com.example.project.Entity.count;
-import com.example.project.pagedto.PageDTO;
 import com.example.project.repo.annorepo;
-import com.example.project.repo.countrepo;
 import com.example.project.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,29 +19,30 @@ public class announservice {
     @Autowired
     private annorepo repo;
 
-    @Autowired
-    private countrepo countrepo;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private ListMapper listMapper;
-    @Autowired
-    private  countservice count;
 
     public List<announcement> getall(){
         return repo.findAll(Sort.by(Sort.Direction.DESC, "announcementID"));
     }
-
-    public Optional<announcement> getbyid(int id){
+    public List<announcement> getallcate(int id){
+        List<announcement> result = repo.findByCategory_CategoryID(id);
+        Collections.reverse(result);
+        return  result;
+    }
+    public Optional<announcement> getbyidplus(int id){
         announcement addcount= Optional.ofNullable(repo.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"))).get();
-        count.updateCount(id);
+        addcount.setViewcount(addcount.getViewcount()+1);
+        repo.saveAndFlush(addcount);
         return Optional.of(addcount);
     }
 
-    public Optional<announcement> getbyidadmin(int id){
+    public Optional<announcement> getbyid(int id){
         announcement addcount= Optional.ofNullable(repo.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"))).get();
         return Optional.of(addcount);
@@ -120,7 +118,6 @@ public class announservice {
 
     public Optional<announcement> addannouncement(announcement news) {
         Optional<announcement> newanno=Optional.of(repo.saveAndFlush(news));
-        count.initCount(newanno.get().getAnnouncementID());
       return  newanno;
     }
     public List<announcement> filterclose (List<announcement> myanno){

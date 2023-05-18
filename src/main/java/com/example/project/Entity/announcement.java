@@ -35,5 +35,8 @@ public class  announcement  {
     private Category category;
     @Column(name = "announcementDisplay" ,nullable = false)
     private  String announcementDisplay;
+
+    @Column(name = "viewCount" )
+    private int viewcount;
 }
 

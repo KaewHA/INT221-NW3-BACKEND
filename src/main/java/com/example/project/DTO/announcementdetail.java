@@ -25,4 +25,5 @@ public class announcementdetail {
 
     public String getannouncementCategory() {return category.getCategoryName();}
     private  String announcementDisplay;
+    private  int viewCount;
 }

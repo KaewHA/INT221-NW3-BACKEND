@@ -20,4 +20,6 @@ public class annowithdetail {
 
     public String getannouncementCategory() {return category.getCategoryName();}
     private  String announcementDisplay;
+
+    private  int viewCount;
 }

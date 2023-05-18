@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface annorepo extends JpaRepository<announcement,Integer> {
  Page<announcement> findByCategory_CategoryID (int cate,Pageable pageable);
  List<announcement> findByCategory_CategoryIDAndAnnouncementDisplay (int cate,String display);
+ List<announcement> findByCategory_CategoryID (int cate);
  List<announcement> findByAnnouncementDisplay (String display);
 
 }

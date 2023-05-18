@@ -92,9 +92,13 @@ public class annoucontrol {
         return mylist;
     }
     @GetMapping("")
-    public List<announcementdetail> getalldetail(@RequestParam(defaultValue = "admin") String mode){
+    public List<announcementdetail> getalldetail(@RequestParam(defaultValue = "admin") String mode , @RequestParam(defaultValue = "0" ) Integer category){
         if(mode.equals("admin")){
-            return service.getall().stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
+            if(category==0){
+                return service.getall().stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
+            }else {
+                return service.getallcate(category).stream().map(e -> modelMapper.map(e, announcementdetail.class)).collect(Collectors.toList());
+            }
         }else if(mode.equals("close")){
             List<announcement>myanno=service.getall();
              return filterclose(myanno).stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
@@ -106,12 +110,12 @@ public class annoucontrol {
                 HttpStatus.BAD_REQUEST, "CATEGORT CODE OR MODE IS NOT FOUND ");
     }
     @GetMapping("/{id}")
-    public Optional<annowithdetail> getID(@PathVariable int id ,@RequestParam(defaultValue = "user") String mode ){
-        if(mode.equals("user")){
-            Optional<announcement> announcement= service.getbyid(id);
+    public Optional<annowithdetail> getID(@PathVariable int id ,@RequestParam(defaultValue = "false") String count ){
+        if(count.equals("true")){
+            Optional<announcement> announcement= service.getbyidplus(id);
             return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
         }else {
-            Optional<announcement> announcement= service.getbyidadmin(id);
+            Optional<announcement> announcement= service.getbyid(id);
             return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
         }
 
@@ -119,7 +123,7 @@ public class annoucontrol {
     
     @GetMapping("/{id}/data")
     public Optional<announcement> getIDcate(@PathVariable int id){
-        return  service.getbyidadmin(id);
+        return  service.getbyid(id);
     }
 
     @DeleteMapping("/{id}")
