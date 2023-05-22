@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin
+@CrossOrigin (origins = {"http://intproj22.sit.kmutt.ac.th/nw3/","http://localhost:5173/"})
 public class catecontroller {
     @Autowired
     private cateservice service;

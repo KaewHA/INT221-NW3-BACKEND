@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/announcements")
-@CrossOrigin
+@CrossOrigin (origins = {"http://intproj22.sit.kmutt.ac.th/nw3/","http://localhost:5173/"})
 public class annoucontrol {
     @Autowired
     private announservice service;
