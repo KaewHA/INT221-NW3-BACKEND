@@ -25,7 +25,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.io.FileNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -49,48 +48,6 @@ public class annoucontrol {
         return service.getall();
     }
 
-    public List<announcement> filterclose (List<announcement> myanno){
-        List<announcement> mylist= new ArrayList<>();
-        myanno.stream().forEach((x)->{
-            if(x.getCloseDate()!=null && x.getAnnouncementDisplay().equals("Y")){
-                long now= ZonedDateTime.now().toEpochSecond();
-                long close=x.getCloseDate().toEpochSecond();
-                if(now>=close){
-                    mylist.add(x);
-                }
-            }
-        });
-        return  mylist;
-    }
-    public  List<announcement> filteractive (List<announcement> myanno){
-        List<announcement> mylist= new ArrayList<>();
-        myanno.stream().forEach((x)->{
-            if(x.getCloseDate()==null && x.getPublishDate()==null && x.getAnnouncementDisplay().equals("Y")){
-                mylist.add(x);
-            }else if(x.getCloseDate()==null && x.getPublishDate()!=null && x.getAnnouncementDisplay().equals("Y")){
-                long now= ZonedDateTime.now().toEpochSecond();
-                long publist=x.getPublishDate().toEpochSecond();
-                if(publist<=now){
-                    mylist.add(x);
-                }
-            }else if(x.getCloseDate()!=null && x.getPublishDate()!=null && x.getAnnouncementDisplay().equals("Y")){
-                long now= ZonedDateTime.now().toEpochSecond();
-                long publist=x.getPublishDate().toEpochSecond();
-                long close=x.getCloseDate().toEpochSecond();
-                if(publist<=now && now<close){
-                    mylist.add(x);
-                }
-            }else if(x.getCloseDate()!=null && x.getPublishDate()==null && x.getAnnouncementDisplay().equals("Y")){
-                long now= ZonedDateTime.now().toEpochSecond();
-                long close=x.getCloseDate().toEpochSecond();
-                if(close>now){
-                    mylist.add(x);
-                }
-            }
-
-    });
-        return mylist;
-    }
     @GetMapping("")
     public List<announcementdetail> getalldetail(@RequestParam(defaultValue = "admin") String mode , @RequestParam(defaultValue = "0" ) Integer category){
         if(mode.equals("admin")){
@@ -100,11 +57,11 @@ public class annoucontrol {
                 return service.getallcate(category).stream().map(e -> modelMapper.map(e, announcementdetail.class)).collect(Collectors.toList());
             }
         }else if(mode.equals("close")){
-            List<announcement>myanno=service.getall();
-             return filterclose(myanno).stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
+            List<announcement>myanno=service.getallclose();
+             return myanno.stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
         }else if(mode.equals("active")){
-            List<announcement>myanno=service.getall();
-            return filteractive(myanno).stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
+            List<announcement>myanno=service.getallactive();
+            return myanno.stream().map(e -> modelMapper.map( e, announcementdetail.class)).collect(Collectors.toList());
         }
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST, "CATEGORT CODE OR MODE IS NOT FOUND ");
@@ -118,7 +75,6 @@ public class annoucontrol {
             Optional<announcement> announcement= service.getbyid(id);
             return announcement.map(e -> modelMapper.map( e, annowithdetail.class));
         }
-
     }
     
     @GetMapping("/{id}/data")
@@ -178,37 +134,7 @@ public Optional<createreturn> createAnnouncement(@RequestBody  @Valid  createann
 //    }
 
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            WebRequest request
-    ) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Announcement attributes validation failed!", request.getDescription(false));
-        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-            if(fieldError.getField().equals("closeDateError")){
-                errorResponse.addValidationError("closeDate",
-                        "must be later than publish date");
-            }else  {
-                errorResponse.addValidationError(fieldError.getField(),
-                        fieldError.getDefaultMessage());
-            }
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-    private ResponseEntity<ErrorResponse> buildErrorResponse(
-            Exception exception, HttpStatus httpStatus, WebRequest request) {
-        return buildErrorResponse( exception, exception.getMessage(), httpStatus, request);
-    }
-    private ResponseEntity<ErrorResponse> buildErrorResponse(
-            Exception exception, String message, HttpStatus httpStatus, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(httpStatus.value(), exception.getMessage(),
-                request.getDescription(false)
-        );
-        return ResponseEntity.status(httpStatus).body(errorResponse);
-    }
+
 
 
 }

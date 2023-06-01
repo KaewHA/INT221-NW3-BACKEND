@@ -11,7 +11,7 @@ import java.time.Clock;
 @Configuration
 public class Config {
     @Bean
-        public ModelMapper modelMapper() {return new ModelMapper();}
+    public ModelMapper modelMapper() {return new ModelMapper();}
 
     @Bean
     public ListMapper listMapper() {return ListMapper.getInstance();}

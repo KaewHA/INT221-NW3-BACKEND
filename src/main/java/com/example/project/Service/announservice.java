@@ -162,6 +162,13 @@ public class announservice {
         });
         return mylist;
     }
+
+    public List<announcement> getallclose(){
+        return  filterclose(getall());
+    }
+    public List<announcement> getallactive(){
+        return  filteractive(getall());
+    }
     public Page<announcement> getpagenodetail (int page, int pagesize, int category, String mode){
         Pageable pageable= PageRequest.of(page,pagesize,Sort.by(Sort.Direction.DESC, "announcementID"));
         if(category==0 && mode.equals("admin")){
