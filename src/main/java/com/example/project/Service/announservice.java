@@ -104,7 +104,7 @@ public class announservice {
     public Optional<announcement> updateannouncement(int id, announcement announcement) {
         repo.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Announcement id :" + id + " does not exist !!!"));
-        validate(announcement);
+//        validate(announcement);
         announcement anno=repo.findById(id).get();
         anno.setAnnouncementTitle(announcement.getAnnouncementTitle());
         anno.setAnnouncementDescription(announcement.getAnnouncementDescription());
